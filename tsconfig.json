@@ -1,0 +1,26 @@
+{
+	"compilerOptions": {
+		"alwaysStrict": true,
+		"baseUrl": "src",
+		"forceConsistentCasingInFileNames": true,
+		"jsx": "react",
+		"module": "esnext",
+		"moduleResolution": "node",
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"lib": [
+			"dom",
+			"es2015"
+		],
+		"strict": true,
+		"target": "es5"
+	},
+	"exclude": [
+		"node_modules"
+	],
+	"include": [
+		"src/**/*.ts",
+		"src/**/*.tsx",
+		"typings/**/*.d.ts"
+	]
+}
