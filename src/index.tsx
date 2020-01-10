@@ -1,6 +1,8 @@
 import * as React from 'react'
 import { render } from 'react-dom'
 
+import App from 'components/App'
+
 import 'less/global.less'
 
-render(<h1>boilerplate</h1>, document.getElementById('root'))
+render(<App />, document.getElementById('root'))
