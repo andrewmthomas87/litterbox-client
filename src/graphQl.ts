@@ -24,7 +24,8 @@ function fromQuery<T>(query: string, variables: any = {}): Observable<T> {
 			}
 
 			return json.data
-		}))
+		})
+	)
 }
 
 export { fromQuery }

@@ -3,6 +3,9 @@ import { container, useBlocMappedState } from 'rx-bloc'
 
 import { APP } from 'blocs'
 
+import SignedOut from './SignedOut'
+import SignedIn from './SignedIn'
+
 const App = (): React.ReactElement | null => {
 	const appBloc = container.get(APP)
 
@@ -14,9 +17,9 @@ const App = (): React.ReactElement | null => {
 		case 'initial':
 			return null
 		case 'signed_out':
-			return <p>Signed out</p>
+			return <SignedOut />
 		case 'user':
-			return <p>Signed in</p>
+			return <SignedIn />
 	}
 }
 

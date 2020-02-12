@@ -26,6 +26,7 @@ interface UserAppState {
 	type: 'user'
 	email: string
 	name: string
+	stage: number
 }
 
 type AppState = InitialAppState | SignedOutState | UserAppState
@@ -38,6 +39,8 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 	}
 
 	protected _mapEventToState(event: AppEvent): Observable<AppState> {
+		console.log('EVENT', event)
+
 		switch (event.type) {
 			case 'initialize':
 				return this._initialize()
@@ -49,15 +52,17 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 			me {
 				email
 				name
+				stage
 			}
-		}`)
-			.pipe(
-				map(data => ({
-					type: 'user',
-					email: data.me.email,
-					name: data.me.name
-				} as UserAppState)),
-				catchError(_ => of({ type: 'signed_out' } as SignedOutState)))
+		}`).pipe(
+			map(data => ({
+				type: 'user',
+				email: data.me.email,
+				name: data.me.name,
+				stage: data.me.stage
+			} as UserAppState)),
+			catchError(_ => of({ type: 'signed_out' } as SignedOutState))
+		)
 	}
 }
 
