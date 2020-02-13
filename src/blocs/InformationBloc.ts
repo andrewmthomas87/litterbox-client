@@ -1,8 +1,10 @@
 import { Bloc } from 'rx-bloc'
 import { Observable, of, empty, concat } from 'rxjs'
-import { mapTo, catchError } from 'rxjs/operators'
+import { mapTo, catchError, tap } from 'rxjs/operators'
 
 import { fromQuery } from 'graphQl'
+
+import { AppEvent } from './AppBloc'
 
 // Events
 
@@ -51,8 +53,12 @@ interface DefaultInformationState {
 type InformationState = InitialInformationState | DefaultInformationState
 
 class InformationBloc extends Bloc<InformationEvent, InformationState> {
-	public constructor() {
+	private _appBloc: Bloc<AppEvent, any>
+
+	public constructor(appBloc: Bloc<AppEvent, any>) {
 		super(() => ({ type: 'initial' }))
+
+		this._appBloc = appBloc
 	}
 
 	protected _mapEventToState(event: InformationEvent): Observable<InformationState> {
@@ -152,11 +158,12 @@ class InformationBloc extends Bloc<InformationEvent, InformationState> {
 				input: { name, onCampus, building, address, onCampusFuture }
 			}).pipe(
 				mapTo(({ type: 'initial' })),
-				catchError(errors => of({
+				catchError((errors: any) => of({
 					...this.currentState,
 					submitting: false,
 					errors: JSON.parse(errors[0].message)
-				}))
+				})),
+				tap(() => this._appBloc.dispatch({ type: 'refresh' }))
 			)
 		)
 	}

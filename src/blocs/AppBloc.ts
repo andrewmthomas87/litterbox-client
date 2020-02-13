@@ -1,4 +1,4 @@
-import { Observable, of } from 'rxjs'
+import { Observable, of, concat } from 'rxjs'
 import { Bloc } from 'rx-bloc'
 
 import { fromQuery } from 'graphQl'
@@ -10,7 +10,11 @@ interface InitializeAppEvent {
 	type: 'initialize'
 }
 
-type AppEvent = InitializeAppEvent
+interface RefreshAppEvent {
+	type: 'refresh'
+}
+
+type AppEvent = InitializeAppEvent | RefreshAppEvent
 
 // States
 
@@ -44,6 +48,8 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 		switch (event.type) {
 			case 'initialize':
 				return this._initialize()
+			case 'refresh':
+				return this._refresh()
 		}
 	}
 
@@ -63,6 +69,10 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 			} as UserAppState)),
 			catchError(_ => of({ type: 'signed_out' } as SignedOutState))
 		)
+	}
+
+	private _refresh(): Observable<AppState> {
+		return concat(of({ type: 'initial' } as AppState), this._initialize())
 	}
 }
 

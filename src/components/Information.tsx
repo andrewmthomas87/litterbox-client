@@ -1,6 +1,8 @@
 import * as React from 'react'
-import { Container, Header, Form, Icon, DropdownItemProps, Button } from 'semantic-ui-react'
+import { Container, Header, Form, Menu, Icon, DropdownItemProps, Button } from 'semantic-ui-react'
 import { useTemporaryBloc, useBlocMappedState, container } from 'rx-bloc'
+
+import config from 'config'
 
 import { APP, INFORMATION } from 'blocs'
 import InformationBloc from 'blocs/InformationBloc'
@@ -112,7 +114,7 @@ const CAMPUS_BUILDINGS: DropdownItemProps[] = [{
 
 const Information = (): React.ReactElement => {
 	const appBloc = container.get(APP)
-	const informationBloc = useTemporaryBloc(INFORMATION, () => new InformationBloc())
+	const informationBloc = useTemporaryBloc(INFORMATION, () => new InformationBloc(appBloc))
 
 	const name = useBlocMappedState(appBloc, state => state.type === 'user' ? state.name : '')
 
@@ -159,25 +161,33 @@ const Information = (): React.ReactElement => {
 	}
 
 	return (
-		<Container text>
-			<Header as='h1'>Welcome!</Header>
-			<p>First step, we need some basic information from you. Don't worry, you'll be able to change it later if necessary.</p>
-			<Form loading={submitting} onSubmit={handleSubmit}>
-				<Form.Input label='What is your full name?'
-					type='text'
-					defaultValue={name}
-					placeholder='Full name'
-					error={errors && errors.name ? errors.name : undefined}
-					onChange={(_, { value }) => handleDataChange('name', value)} />
-				<Form.Checkbox label='Do you currently live in a campus building?'
-					checked={onCampus}
-					onChange={(_, { checked }) => handleDataChange('onCampus', !!checked)} />
-				{location}
-				<Form.Checkbox label='Next year, will you live in a campus building?'
-					defaultChecked
-					onChange={(_, { checked }) => handleDataChange('onCampusFuture', !!checked)} />
-				<Button type='submit'>Save</Button>
-			</Form>
+		<Container>
+			<Menu pointing secondary>
+				<Menu.Item name='Information' active />
+				<Menu.Item name='Sign out'
+					position='right'
+					onClick={() => window.location.href = config.signOutUrl} />
+			</Menu>
+			<Container text>
+				<Header as='h1'>Welcome!</Header>
+				<p>First step, we need some basic information from you. Don't worry, you'll be able to change it later if necessary.</p>
+				<Form loading={submitting} onSubmit={handleSubmit}>
+					<Form.Input label='What is your full name?'
+						type='text'
+						defaultValue={name}
+						placeholder='Full name'
+						error={errors && errors.name ? errors.name : undefined}
+						onChange={(_, { value }) => handleDataChange('name', value)} />
+					<Form.Checkbox label='Do you currently live in a campus building?'
+						checked={onCampus}
+						onChange={(_, { checked }) => handleDataChange('onCampus', !!checked)} />
+					{location}
+					<Form.Checkbox label='Next year, will you live in a campus building?'
+						defaultChecked
+						onChange={(_, { checked }) => handleDataChange('onCampusFuture', !!checked)} />
+					<Button type='submit'>Save</Button>
+				</Form>
+			</Container>
 		</Container>
 	)
 }
