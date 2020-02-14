@@ -6,7 +6,7 @@ import { fromQuery } from 'graphQl'
 
 interface TimeSlot {
 	id: string
-	date: string
+	date: Date
 	startTime: string
 	endTime: string
 }
@@ -27,7 +27,9 @@ interface InitialPickupState {
 
 interface DefaultPickupState {
 	type: 'default'
-	timeSlots: TimeSlot[]
+	startDate: Date
+	endDate: Date
+	timeSlots: Map<number, TimeSlot[]>
 }
 
 type PickupState = InitialPickupState | DefaultPickupState
@@ -55,12 +57,33 @@ class PickupBloc extends Bloc<PickupEvent, PickupState> {
 				endTime
 			}
 		}`).pipe(
-			map((data) => ({
-				type: 'default',
-				timeSlots: data.pickupTimeSlots
-			} as PickupState))
+			map((data) => {
+				const allTimeSlots: TimeSlot[] = data.pickupTimeSlots.map(({ id, date, startTime, endTime }: any) => ({
+					id,
+					date: new Date(date),
+					startTime, endTime
+				}))
+
+				const startDate = allTimeSlots[0].date
+				const endDate = allTimeSlots[allTimeSlots.length - 1].date
+
+				const timeSlots = new Map<number, TimeSlot[]>()
+				for (let timeSlot of allTimeSlots) {
+					const dateTimeSlots = timeSlots.get(timeSlot.date.getDate())
+					if (dateTimeSlots) {
+						dateTimeSlots.push(timeSlot)
+					} else {
+						timeSlots.set(timeSlot.date.getDate(), [timeSlot])
+					}
+				}
+
+				return {
+					type: 'default',
+					startDate, endDate, timeSlots
+				} as PickupState
+			})
 		)
 	}
 }
 
-export { PickupEvent, PickupState, PickupBloc as default }
+export { TimeSlot, PickupEvent, PickupState, PickupBloc as default }
