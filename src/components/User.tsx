@@ -37,6 +37,7 @@ const User = (): React.ReactElement => {
 						type: 'route',
 						page: UserPage.DASHBOARD
 					})} />
+				<Menu.Item name='Information' />
 				<Menu.Item name='Storage'
 					active={page === UserPage.STORAGE}
 					onClick={() => userBloc.dispatch({

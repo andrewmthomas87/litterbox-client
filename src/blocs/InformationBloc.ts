@@ -148,7 +148,7 @@ class InformationBloc extends Bloc<InformationEvent, InformationState> {
 				submitting: true,
 				errors: undefined
 			}),
-			fromQuery<any>(`query SaveInformation($input: InformationInput!) {
+			fromQuery<any>(`mutation SaveInformation($input: InformationInput!) {
 				saveInformation(information: $input) {
 					email
 					name
