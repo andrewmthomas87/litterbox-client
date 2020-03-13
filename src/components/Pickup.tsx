@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { Container, Icon, Table, Label, Button, List, Dimmer, Loader, Divider } from 'semantic-ui-react'
 import { useTemporaryBloc, useBlocMappedState } from 'rx-bloc'
+import { Container, Icon, Table, Label, Button, List, Dimmer, Loader, Divider } from 'semantic-ui-react'
 
 import { PICKUP } from 'blocs'
 import PickupBloc, { TimeSlot } from 'blocs/PickupBloc'
